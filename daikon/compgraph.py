@@ -21,7 +21,7 @@ def compute_lengths(sequences):
     return lengths
 
 
-def define_computation_graph(source_vocab_size: int, target_vocab_size: int, batch_size: int):
+def define_computation_graph(source_vocab_size: int, target_vocab_size: int, batch_size: int, is_training: bool=False):
 
     tf.reset_default_graph()
 
@@ -46,6 +46,10 @@ def define_computation_graph(source_vocab_size: int, target_vocab_size: int, bat
                                                                  encoder_inputs_embedded,
                                                                  initial_state=initial_state,
                                                                  dtype=tf.float32)
+        
+        #dropout encoder:
+        if is_training and C.DROPOUT < 1:
+            encoder_cell_fw = tf.contrib.rnn.DropoutWrapper(encoder_cell_fw, output_keep_prob=C.DROPOUT)
 
     with tf.variable_scope("Decoder"):
         decoder_cell = tf.contrib.rnn.LSTMCell(C.HIDDEN_SIZE)
@@ -53,6 +57,10 @@ def define_computation_graph(source_vocab_size: int, target_vocab_size: int, bat
                                                                  decoder_inputs_embedded,
                                                                  initial_state=encoder_final_state,
                                                                  dtype=tf.float32)
+        
+        #dropout decoder:
+        if is_training and C.DROPOUT < 1:
+            decoder_cell = tf.contrib.rnn.DropoutWrapper(decoder_cell, output_keep_prob=C.DROPOUT)
 
     with tf.variable_scope("Logits"):
         decoder_logits = tf.contrib.layers.linear(decoder_outputs, target_vocab_size)
