@@ -46,3 +46,5 @@ LEARNING_RATE = 0.0001
 
 # log training progress every X batches
 LOGGING_INTERVAL = 1000
+
+DROPOUT = 0.7 # probability of active neurons  (1-p = dropout)
