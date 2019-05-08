@@ -49,7 +49,7 @@ def define_computation_graph(source_vocab_size: int, target_vocab_size: int, bat
         
         #dropout encoder:
         if is_training and C.DROPOUT < 1:
-            encoder_cell_fw = tf.contrib.rnn.DropoutWrapper(encoder_cell_fw, output_keep_prob=C.DROPOUT)
+            encoder_cell = tf.contrib.rnn.DropoutWrapper(encoder_cell, output_keep_prob=C.DROPOUT)
 
     with tf.variable_scope("Decoder"):
         decoder_cell = tf.contrib.rnn.LSTMCell(C.HIDDEN_SIZE)
